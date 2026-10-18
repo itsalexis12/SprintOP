@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ "Editar" if restaurant else "Nuevo" }} restaurante</h1>
+
+<form id="restaurant-form" data-id="{{ restaurant.id if restaurant else '' }}">
+  <div>
+    <label>Nombre:</label><br>
+    <input name="name" required value="{{ restaurant.name if restaurant else '' }}">
+  </div>
+  <br>
+  <div>
+    <label>Categoría:</label><br>
+    <input name="category" required value="{{ restaurant.category if restaurant else '' }}">
+  </div>
+  <br>
+  <div>
+    <label>Ciudad:</label><br>
+    <input name="city" required value="{{ restaurant.city if restaurant else '' }}">
+  </div>
+  <br>
+  <div>
+    <label>Precio:</label><br>
+    <select name="price" required>
+      <option value="1" {% if restaurant and restaurant.price == 1 %}selected{% endif %}>$</option>
+      <option value="2" {% if restaurant and restaurant.price == 2 %}selected{% endif %}>$$</option>
+      <option value="3" {% if restaurant and restaurant.price == 3 %}selected{% endif %}>$$$</option>
+    </select>
+  </div>
+  <br>
+  <div>
+    <label>URL de imagen:</label><br>
+    <input name="photoUrl" value="{{ restaurant.photoUrl if restaurant else '' }}">
+  </div>
+  <br>
+  <button type="submit">Guardar</button>
+  <a href="/"><button type="button">Cancelar</button></a>
+</form>
+
+<p id="message" style="margin-top: 15px; font-weight: bold;"></p>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Listado de Restaurantes</h1>
+
+<!-- Filtros de Búsqueda -->
+<form method="GET" action="/" class="filter-form" style="margin-bottom: 20px;">
+  <input type="text" name="city" placeholder="Ciudad" value="{{ request.query_params.get('city', '') }}">
+  <input type="text" name="category" placeholder="Categoría" value="{{ request.query_params.get('category', '') }}">
+  <select name="price">
+    <option value="">Todos los precios</option>
+    <option value="1" {% if request.query_params.get('price') == '1' %}selected{% endif %}>$</option>
+    <option value="2" {% if request.query_params.get('price') == '2' %}selected{% endif %}>$$</option>
+    <option value="3" {% if request.query_params.get('price') == '3' %}selected{% endif %}>$$$</option>
+  </select>
+  <button type="submit">Filtrar</button>
+  <a href="/">Limpiar</a>
+</form>
+
+{% if restaurants %}
+  <div class="restaurant-list">
+    {% for restaurant in restaurants %}
+      <div class="card" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 8px;">
+        <h2>{{ restaurant.name }}</h2>
+        <p><strong>Categoría:</strong> {{ restaurant.category }}</p>
+        <p><strong>Ciudad:</strong> {{ restaurant.city }}</p>
+        <p><strong>Precio:</strong> {{ "$" * restaurant.price }}</p>
+        <p><strong>Calificación:</strong> {{ restaurant.avgRating }} ⭐ ({{ restaurant.numRatings }} opiniones)</p>
+        <a href="/restaurants/{{ restaurant.id }}">Ver detalles</a>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No se encontraron restaurantes registrados.</p>
+{% endif %}
+{% endblock %}
