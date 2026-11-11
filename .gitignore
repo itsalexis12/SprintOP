@@ -5,3 +5,4 @@ __pycache__/
 !package.json
 firebase-debug.log
 firestore-debug.log
+secrets/

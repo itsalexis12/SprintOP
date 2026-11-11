@@ -1,23 +1,24 @@
 import os
-import firebase_admin
-from firebase_admin import credentials, firestore
-from app.core.config import settings
+from google.cloud import firestore
+from google.oauth2 import service_account
+from dotenv import load_dotenv
 
-def get_firestore_client():
-    if settings.FIRESTORE_EMULATOR_HOST:
-        os.environ["FIRESTORE_EMULATOR_HOST"] = settings.FIRESTORE_EMULATOR_HOST
+load_dotenv()
 
-    if not firebase_admin._apps:
-        if settings.FIREBASE_CREDENTIALS_PATH:
-            cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
-            firebase_admin.initialize_app(cred, {
-                "projectId": settings.FIREBASE_PROJECT_ID
-            })
-        else:
-            firebase_admin.initialize_app(options={
-                "projectId": settings.FIREBASE_PROJECT_ID
-            })
+cred_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
+project_id = os.getenv("FIREBASE_PROJECT_ID")
+emulator_host = os.getenv("FIRESTORE_EMULATOR_HOST")
 
-    return firestore.Client(project=settings.FIREBASE_PROJECT_ID)
-
-db = get_firestore_client()
+if emulator_host:
+    # 1. MODO LOCAL: Asegura la variable en el entorno global para el SDK
+    os.environ["FIRESTORE_EMULATOR_HOST"] = emulator_host
+    db = firestore.Client(project=project_id)
+elif cred_path and os.path.exists(cred_path):
+    # 2. MODO NUBE: Carga explícitamente las credenciales de la llave JSON
+    credentials = service_account.Credentials.from_service_account_file(cred_path)
+    db = firestore.Client(project=project_id, credentials=credentials)
+else:
+    raise RuntimeError(
+        "Error de conexión: Revisa tu .env. Debes tener FIRESTORE_EMULATOR_HOST activo "
+        "o la llave 'service-account.json' existente en la ruta especificada."
+    )
