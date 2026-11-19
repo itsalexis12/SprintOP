@@ -2,6 +2,7 @@ from fastapi import APIRouter, Query
 from app.services.restaurant_service import RestaurantService
 from app.domain.schemas import RestaurantCreate, RestaurantUpdate
 
+# Enrutador e instancia del servicio para gestionar las rutas de restaurantes
 router = APIRouter(prefix="/restaurants", tags=["Restaurants"])
 service = RestaurantService()
 

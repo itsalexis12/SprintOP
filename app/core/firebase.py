@@ -18,6 +18,7 @@ elif cred_path and os.path.exists(cred_path):
     credentials = service_account.Credentials.from_service_account_file(cred_path)
     db = firestore.Client(project=project_id, credentials=credentials)
 else:
+    # 3. SI no es ninguna de las dos, da error
     raise RuntimeError(
         "Error de conexión: Revisa tu .env. Debes tener FIRESTORE_EMULATOR_HOST activo "
         "o la llave 'service-account.json' existente en la ruta especificada."

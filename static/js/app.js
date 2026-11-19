@@ -1,3 +1,6 @@
+/**
+ * Listener inicial para el envío del formulario de creación de restaurantes (POST).
+ */
 const form = document.getElementById("restaurant-form");
 
 if (form) {
@@ -24,6 +27,9 @@ if (form) {
     }
   });
 }
+/**
+ * Inicializa los eventos principales del DOM para crear, editar y eliminar restaurantes.
+ */
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Manejo del Formulario (Crear y Editar)
   const form = document.getElementById("restaurant-form");

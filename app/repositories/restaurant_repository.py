@@ -3,11 +3,13 @@ from app.core.firebase import db
 
 
 class RestaurantRepository:
+    """Repositorio encargado de realizar las operaciones CRUD en la colección de restaurantes de Firestore."""
 
     def __init__(self):
         self.collection = db.collection("restaurants")
 
     def create(self, data: dict) -> dict:
+        """Crea un nuevo documento de restaurante con ID autogenerado y métricas inicializadas."""
         # Genera una referencia vacía para obtener un ID automático antes de guardar
         ref = self.collection.document()
         data["id"] = ref.id
@@ -17,6 +19,7 @@ class RestaurantRepository:
         return data
 
     def get(self, restaurant_id: str) -> dict | None:
+        """Busca y devuelve un restaurante por su ID, o None si no existe."""
         doc = self.collection.document(restaurant_id).get()
         if not doc.exists:
             return None
@@ -31,6 +34,7 @@ class RestaurantRepository:
         limit: int = 20,
         start_after: str | None = None,
     ) -> list[dict]:
+        """Consulta restaurantes aplicando filtros opcionales, ordenamiento y paginación por cursor."""
         query = self.collection
 
         if category:
@@ -50,6 +54,7 @@ class RestaurantRepository:
         return [doc.to_dict() | {"id": doc.id} for doc in query.stream()]
 
     def update(self, restaurant_id: str, data: dict) -> dict | None:
+        """Actualiza los campos indicados de un restaurante existente y devuelve el registro actualizado."""
         ref = self.collection.document(restaurant_id)
         doc = ref.get()
         if not doc.exists:
@@ -58,6 +63,7 @@ class RestaurantRepository:
         return self.get(restaurant_id)
 
     def delete(self, restaurant_id: str) -> bool:
+        """Elimina un restaurante por su ID y devuelve True si existía."""
         ref = self.collection.document(restaurant_id)
         doc = ref.get()
         if not doc.exists:
